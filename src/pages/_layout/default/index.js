@@ -15,7 +15,8 @@ export default function DefaultLayout({children}) {
           <ul>
               <li><Link to="/home">Home</Link></li>
               <li><Link to="/listmeats"> Lista de refeições</Link></li>
-              
+              <li><Link to="/novomenu"> Novo Cardápio </Link></li>
+              <li><Link to="/relatorio"> Relatório </Link></li>
           </ul>
 
           
