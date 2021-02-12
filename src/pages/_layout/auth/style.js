@@ -27,6 +27,13 @@ export const Content = styled.div`
     width: 185px;
   }
 
+  p{
+    margin-top:10px;
+    color: #f64c75;
+    font-weight:bold;
+    font-family:'Roboto', sans-serif;
+  }
+
   form {
     display:flex;
     flex-direction: column;

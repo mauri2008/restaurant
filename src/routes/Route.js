@@ -19,14 +19,17 @@ export default function RouteWrapper({
   const signed = useSelector(state=> state.auth.signed);
 
   if(!signed && isPrivate){
-    return <Redirect to="/" />
+    return <Redirect to="/" />;
   }
 
   if(signed && !isPrivate){
-    return <Redirect to="/home" />
+    console.log('entrou ')
+    return <Redirect to="/home"/>;
   }
 
-  const Layout = signed ? DefaultLayout : AuthLayout
+
+
+  const Layout = signed ? DefaultLayout : AuthLayout;
 
   return (
     <Route {...rest} render={props =>(
