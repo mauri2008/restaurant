@@ -20,6 +20,7 @@ function routes(){
       <Route path="/listmeats" component={listMeat} isPrivate/>
       <Route path="/novomenu" component={NewMenu} isPrivate/>
       <Route path="/relatorio" component={ReportMenu} isPrivate/>
+      
     </Switch>
   );
 }

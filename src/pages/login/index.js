@@ -1,11 +1,14 @@
 
 import React, {useState , useEffect} from 'react';
 import { useDispatch} from 'react-redux';
-import {Redirect} from 'react-router-dom';
 import {Form, Input} from '@rocketseat/unform';
 import * as Yup from 'yup';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 import api from '../../services/api';
+
+import Loading from '../../components/loading'
 
 
 
@@ -19,10 +22,10 @@ export default function Login (){
   
   const dispatch = useDispatch();
   
-  const [mensage, setMensage] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   async function  handleSubmit  ({email, password}) {
-
+    setLoading(true);
     try{
       const response = await api.post('/sessions', {
         email,
@@ -46,22 +49,26 @@ export default function Login (){
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
 
+        document.location.reload()
         
-        <Redirect to="/home"/>
+          
+        }
       }
-    }catch (error){
+    catch (error){
       console.log(error);
-      setMensage(true);
+      toast.error('Usuário ou Senha incorreto!');
     }
-
+    setLoading(false);
   }
 
     return(
 
       <>
+        
+
         <img src="https://energiasirius.com/wp-content/uploads/2020/04/solargroup-logo.png" />
         
-        {(mensage)? <p>Usuario ou Senha Incorreta </p> : ''}
+        <ToastContainer/>
         <Form schema={schema} onSubmit={handleSubmit}>
           <Input name="email" type="email" placeholder="Seu e-mail"/>
           <Input name="password" type="password" placeholder="Sua senha secreta"/>
@@ -69,6 +76,9 @@ export default function Login (){
           <button type="submit">Acessar</button>
           {/* <Link to="/register">Novo usuário</Link> */}
         </Form>
+        
+        {(loading)? <Loading/>: ''}
+
       </>
     );
   

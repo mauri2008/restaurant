@@ -1,14 +1,29 @@
-import React from  'react';
-import { useSelector } from 'react-redux'
+import React, {useState, useEffect} from  'react';
+import { useSelector, } from 'react-redux'
 import { FaFilter} from 'react-icons/fa';
 import {DivFilter, ContainerMain, MenuDay, StatusMeats , CardStatus, ListMenu} from './style';
+import Api from   '../../services/api'
+import { utcToZonedTime} from 'date-fns-tz'
+import {format} from 'date-fns'
+import pt from 'date-fns/locale/pt'
+
 
 function NewMenu(){
 
-  const token = useSelector(state=> state.auth.token);
-  const user = useSelector(state=>state.auth.user);
-  
-  console.log(user);
+  const [data, setData] = useState([]);
+
+  useEffect(()=>{
+    async function initial(){
+      const response = await Api.get('/request');
+      const {data} = response;
+      data.map((itemAlter)=>{
+        itemAlter.menu.service_data = utcToZonedTime(itemAlter.menu.service_data)
+      })
+      setData(data);
+    }
+    initial();
+  }, []);
+
   return(   
     <ContainerMain>
 
@@ -41,30 +56,17 @@ function NewMenu(){
       </StatusMeats>
 
       <ListMenu>
-          <tr>
-            <td>12/02/2020</td>
-            <td>Alexandre</td>
-            <td>Principal</td>
-            <td>Frango Assado</td>
-          </tr>
-          <tr>
-            <td>12/02/2020</td>
-            <td>Alexandre</td>
-            <td>Principal</td>
-            <td>Frango Assado</td>
-          </tr>
-          <tr>
-            <td>12/02/2020</td>
-            <td>Alexandre</td>
-            <td>Principal</td>
-            <td>Frango Assado</td>
-          </tr>
-          <tr>
-            <td>12/02/2020</td>
-            <td>Alexandre</td>
-            <td>Principal</td>
-            <td>Frango Assado</td>
-          </tr>
+        {
+          data.map((item)=>(
+            <tr>
+              <td>{format(item.menu.service_data, "dd/MM/yyyy",{locale: pt })}</td>
+              <td>{item.user.name}</td>
+              <td>{item.option}</td>
+            </tr>
+          ))
+        }
+
+         
       
       </ListMenu> 
 

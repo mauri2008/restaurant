@@ -6,6 +6,12 @@ import { Wrapper, NavGate, TopNav, ContainerData, Element} from './style';
 import Logo from '../../../assets/logo.svg';
 
 export default function DefaultLayout({children}) {
+  
+  function handleLogof(){
+    localStorage.clear();
+    document.location.reload();
+  }
+
   return (
     <Wrapper>
       <NavGate>
@@ -21,7 +27,7 @@ export default function DefaultLayout({children}) {
 
           
         </TopNav>
-        <Link to="/">Logof</Link>
+        <Link onClick={handleLogof}>Logof</Link>
       </NavGate>
         <ContainerData>
           <Element>

@@ -23,7 +23,6 @@ export default function RouteWrapper({
   }
 
   if(signed && !isPrivate){
-    console.log('entrou ')
     return <Redirect to="/home"/>;
   }
 

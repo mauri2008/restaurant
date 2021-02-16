@@ -80,7 +80,7 @@ export const ListMenu = styled.table`
    border-bottom: 1px solid #c3c3c3;
   
   & td{
-    text-align: center;
+    text-align: left;
     border-bottom: 1px solid #c3c3c3;
     padding: 5px 0px 10px;
 
