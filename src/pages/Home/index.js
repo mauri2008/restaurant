@@ -1,16 +1,22 @@
 import React, {useEffect, useState}from  'react';
 import { useSelector } from 'react-redux'
 import { FaUtensils } from 'react-icons/fa';
-import {UlList, ContainerMain, MenuDay, Context, Icon} from './style';
-import {format, isBefore, isEqual, setHours, setMinutes,setSeconds , parseISO} from 'date-fns';
+import { format, isBefore, isEqual, setHours, setMinutes,setSeconds , parseISO} from 'date-fns';
 import { utcToZonedTime} from 'date-fns-tz'
 import pt from 'date-fns/locale/pt';
+import  { confirmAlert } from 'react-confirm-alert'
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+import {toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css';
+
+import { UlList, ContainerMain, MenuDay, Context, Icon, AlertBase} from './style';
 
 import Api from '../../services/api'
 
 function Home(){
 
-    const token = useSelector(state=> state.auth.token);
+  const token = useSelector(state=> state.auth.token);
   const dateUser =JSON.parse( localStorage.getItem('user'));
 
   const [dataMenu, setDataMenu] = useState([]);
@@ -21,9 +27,9 @@ function Home(){
     
     async function readMenu(){
 
-      const response = await Api.get('/request')
+      const response = await Api.get(`/request?id_user=${dateUser.id}`)
       const {data} = response;
-      console.log(data);
+
       data.map((dataAlter)=>{
         dataAlter.menu.service_data = utcToZonedTime( dataAlter.menu.service_data )
       })
@@ -70,8 +76,55 @@ function Home(){
     readMenu();
   },[]);
 
+  async function handleDelete(id){
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <AlertBase className='custom-ui'>
+            <h1>Atenção</h1>
+            <p>Deseja Realmente cancelar este pedido?</p>
+
+            <div className="btnAlert">
+              <button
+                onClick={() => {
+                  handleClickDelete(id);
+                  onClose();
+                }}
+              >
+                Sim
+              </button>
+              <button className="close" onClick={onClose}>Não</button>
+            </div>
+            
+          </AlertBase>
+        );
+      }
+    });
+  }
+
+  async function handleClickDelete(id){
+    try{
+      console.log(id)
+      const request = await Api.delete(`/request?id=${id}`);
+      console.log(request);
+
+      toast.success('Pedido cancelado com sucesso!')
+
+      setTimeout(() => {
+        document.location.reload();
+      }, 5000);
+    } catch(erro){
+      toast.error('Ocorreu um erro ao remover este pedido!')
+    }
+    
+
+  }
+
+
   return(   
+
     <ContainerMain>
+      <ToastContainer/>
       {
         menuDay.map((itemDay)=>(
 
@@ -94,8 +147,15 @@ function Home(){
                 <FaUtensils/>
               </Icon>
               <Context>
-                  <p>{format(itens.menu.service_data, "d 'de' MMMM",{locale: pt }) }</p>
+                  <div>
+                    <p>{format(itens.menu.service_data, "d 'de' MMMM",{locale: pt })}</p>
+                    <a href="#" onClick={()=>{handleDelete(itens.id)}}>Cancelar</a>
+                    
+                  </div>
+                  
                   <span>{itens.option}</span>
+
+                  
               </Context>
 
             </li>            

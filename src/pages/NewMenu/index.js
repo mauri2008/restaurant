@@ -1,6 +1,6 @@
 import React, { useState } from  'react';
 import {ContainerMain, MenuDay} from './style';
-import {Form, Input } from '@rocketseat/unform';
+import {Form, Input,Select } from '@rocketseat/unform';
 import * as Yup from 'yup';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -16,23 +16,31 @@ function NewMenu(){
   });
 
   async function handleSubit({serviceData, main, options}, {resetForm}){
-    
-    try{
+    console.log('teste');
+    const turno = document.querySelector('#turnos').value;
+     try{
       const response = await Api.post('/menu', {
         serviceData,
         main,
-        options
+        options,
+        turno
       })
 
       toast.success('Menu Cadastrado com sucesso!');
       resetForm();
-      
-
 
     }catch(error){
+
       toast.error('Erro ao inserir cadastro!');
     }
   }
+  const option = [
+    {id: '0', title:''},
+    {id: '1', title: '1ª Turno'},
+    {id: '2', title: '2ª Turno'},
+    {id: '3', title: '3ª Turno'},
+  ]
+
   return(   
     <ContainerMain>
 
@@ -42,6 +50,7 @@ function NewMenu(){
       <ToastContainer/>
       <Form schema={schema} onSubmit={handleSubit} >
           <Input type="date" name="serviceData"  placeholder="Data"/>
+          <Select name="turnos" options={option}/>
           <Input type="text" name="main"  placeholder="Prato Principal"/>
           <Input type="text" name="options" placeholder="Prato Opcional"/>
 

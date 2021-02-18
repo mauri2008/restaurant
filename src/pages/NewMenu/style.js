@@ -45,6 +45,14 @@ export const ContainerMain = styled.div`
       border-radius: 5px;
       padding-left: 10px;
     }
+    & select{
+      height: 40px;
+      margin-top: 20px;
+      border: 1px solid #7e7e7e;
+      border-radius: 5px;
+      padding-left: 10px;
+    }
+    
     & button{
       height: 45px;
       background: #54A0F6;

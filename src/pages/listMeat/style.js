@@ -13,6 +13,10 @@ export const ContainerMain = styled.div`
   align-items:center;
   flex-direction:column;
 
+  .notMeat{
+    text-align:center;
+    margin: 20px 0px;
+  }
 
 `;
 
@@ -56,6 +60,8 @@ export const UlList = styled.ul`
       
     }
 
+
+
   }
 `;
 
@@ -79,3 +85,4 @@ export const  ButtonRegister = styled.button`
       background: ${darken(0.1,'#1c86ff' )}
     }
 `;
+

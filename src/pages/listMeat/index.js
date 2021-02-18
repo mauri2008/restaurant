@@ -28,8 +28,8 @@ function ListMeat(){
     async function loadMenu(){
       
       setLoading(true);
-      const response = await Api.get('menu');
-      const responseRest = await Api.get('request');
+      const response = await Api.get(`/menu?turno=${dateUser.turno}`);
+      const responseRest = await Api.get(`/request?id_user=${dateUser.id}`);
       const {data} = response;
 
 
@@ -39,18 +39,15 @@ function ListMeat(){
 
       const teste = data.filter((item)=>{
         
+        console.log(responseRest.data);
+
         if(isBefore(date, item.service_data)){
-          
-          const compar = responseRest.data.find(rst =>{
-              return rst.menu.id === item.id
-          });
+
+          const  compar = responseRest.data.find(resquet=> resquet.menu.id === item.id)
+
           if(!compar){return item}
         }
       })
-
-
-
-
       setListMenu(teste);
       setLoading(false);
     }
@@ -73,10 +70,12 @@ function ListMeat(){
     
     if(response.data){
       toast.success('Lista Registrada com Sucesso ');
+      setTimeout(() => {
+        document.location.reload();
+      }, 5000);
     }else{
       toast.error('Ops! tivemos uma erro ao registrar seu pedido, tente novamente.')
     }
-    console.log(response.data)
     setLoading(false);
   }
 
@@ -90,6 +89,8 @@ function ListMeat(){
 
       <UlList>
           {
+            (listMenu.length > 0)? (
+              
             listMenu.map(menu=>(
               
               <li key={menu.id}>
@@ -108,10 +109,14 @@ function ListMeat(){
                 </form>
               </li>
             ))
+            ):(<h3 className="notMeat">Nenhuma refeição foi encontrada.</h3>)
           }
         
-      </UlList>  
-      <ButtonRegister onClick={handleRegister}> Registrar </ButtonRegister>
+      </UlList>
+      { 
+      (listMenu.length > 0)? (
+          <ButtonRegister onClick={handleRegister}> Registrar </ButtonRegister>
+      ):''}
       { loading &&
           <Cloading/>
       }

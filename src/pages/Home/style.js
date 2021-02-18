@@ -67,15 +67,88 @@ export const Icon = styled.div`
 export const Context = styled.div`
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  & p{
+  width:100%;
+
+  & div{
+    width: 100%;
+    display:flex;
+    justify-content: space-between;
+    
+
+    & p{
     font-weight: normal;
     color: #7359c1;
     margin-bottom: 3px;
+
+    }
+
+    & a{
+      font-size: 12px;
+      color: #7359c1;
+      cursor:pointer;
+      transition: background 0.5s;
+      &:hover{
+        color: ${darken(0.3, '#7359C1')}
+      }
+    }
+
   }
+
 
   & span{
     color: #7e7e7e;
   }
 `;
 
+export const AlertBase = styled.div`
+  background:rgba(33,33,33,0.6);
+  width: 350px;
+  height: 200px;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  border-radius:5px;
+  color: #e9e9e9;
+
+
+  & h1{
+    margin-bottom: 10px;
+  }
+  & p{
+    margin-bottom:20px
+  }
+  & .btnAlert{
+    width:350px;
+    display:flex;
+
+    flex-direction:row;
+    justify-content: center;
+    
+
+    & button{
+      padding: 8px 15px;
+      border:none;
+      border-radius:5px;
+      background:rgba(55,255,55, 0.7);
+      color: #fff;
+      transition: background 0.3s;
+
+      &:hover{
+        background: ${darken(0.1, 'rgba(55,255,55, 0.7)')}
+      }
+    }
+
+    .close{
+      background:rgba(255,55,55, 0.9);
+      margin-left:20px;
+      color: #fff;
+      &:hover{
+        background: ${darken(0.1, 'rgba(255,55,55, 0.9)')}
+      }
+    }
+
+  }
+
+`;
 
