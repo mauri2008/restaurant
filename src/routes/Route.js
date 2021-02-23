@@ -8,8 +8,6 @@ import AuthLayout from '../pages/_layout/auth';
 import DefaultLayout from '../pages/_layout/default';
 
 
-
-
 export default function RouteWrapper({
   component: Component,
   isPrivate,
@@ -17,6 +15,9 @@ export default function RouteWrapper({
 }){
   
   const signed = useSelector(state=> state.auth.signed);
+  const user= useSelector(state=> state.auth.user);
+
+  console.log(`singned : ${signed}  and User ${user.provider}`)
 
   if(!signed && isPrivate){
     return <Redirect to="/" />;
@@ -25,7 +26,6 @@ export default function RouteWrapper({
   if(signed && !isPrivate){
     return <Redirect to="/home"/>;
   }
-
 
 
   const Layout = signed ? DefaultLayout : AuthLayout;

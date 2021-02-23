@@ -1,5 +1,4 @@
 import React, {useEffect , useState, useMemo} from  'react';
-import {useSelector} from 'react-redux'
 import Api from '../../services/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -27,8 +26,9 @@ function ListMeat(){
   useEffect(()=>{
     async function loadMenu(){
       
-      setLoading(true);
-      const response = await Api.get(`/menu?turno=${dateUser.turno}`);
+      const provider = (dateUser.provider)? '&provider=true':'';
+
+      const response = await Api.get(`/menu?turno=${dateUser.turno}${provider}`);
       const responseRest = await Api.get(`/request?id_user=${dateUser.id}`);
       const {data} = response;
 
@@ -38,8 +38,6 @@ function ListMeat(){
       });
 
       const teste = data.filter((item)=>{
-        
-        console.log(responseRest.data);
 
         if(isBefore(date, item.service_data)){
 
@@ -49,7 +47,7 @@ function ListMeat(){
         }
       })
       setListMenu(teste);
-      setLoading(false);
+
     }
     loadMenu();
   },[date] );
@@ -62,20 +60,34 @@ function ListMeat(){
     let data = [];
     for(let i=0; i< checkBox.length; i++){
       if(checkBox[i].checked === true){      
-        data.push({user_id:dateUser.id, menu_id:checkBox[i].value,option:checkBox[i].dataset.option})
+        data.push({user_id:dateUser.id, menu_id:checkBox[i].value,option:checkBox[i].dataset.option, turno: dateUser.turno})
       }
     }
 
-    const response = await Api.post('/request',{ data});
+    let setErro = false;
+
+    const response = await Api.post(
+          '/request',{ data})
+          .catch(function (error){
+            const{data, status} = error.response;
+            toast.error(`Error : ${data.error}`)
+            setErro = true;
+           });
     
-    if(response.data){
-      toast.success('Lista Registrada com Sucesso ');
-      setTimeout(() => {
-        document.location.reload();
-      }, 5000);
-    }else{
-      toast.error('Ops! tivemos uma erro ao registrar seu pedido, tente novamente.')
+    if(!setErro){
+       toast.success('Lista Registrada com Sucesso ');
+      //  setTimeout(() => {
+      //    document.location.reload();
+      //  }, 5000);
     }
+    // if(response.data){
+    //   toast.success('Lista Registrada com Sucesso ');
+    //   setTimeout(() => {
+    //     document.location.reload();
+    //   }, 5000);
+    // }else{
+    //   toast.error('Ops! tivemos uma erro ao registrar seu pedido, tente novamente.')
+    // }
     setLoading(false);
   }
 
@@ -96,8 +108,8 @@ function ListMeat(){
               <li key={menu.id}>
                 <article>
                   
-                  <p>{ format(menu.service_data, "d 'de' MMMM",{locale: pt })}</p>
-                  <a href="#">Cancelar</a>
+                  <p>{dateUser.provider?` ${menu.turno}º turno`:''} { format(menu.service_data, "d 'de' MMMM",{locale: pt }) }</p>
+                  {/* <a href="#">Cancelar</a> */}
                 </article>
                             
                 <form>
@@ -114,7 +126,7 @@ function ListMeat(){
         
       </UlList>
       { 
-      (listMenu.length > 0)? (
+      (listMenu.length > 0  && !dateUser.provider)? (
           <ButtonRegister onClick={handleRegister}> Registrar </ButtonRegister>
       ):''}
       { loading &&

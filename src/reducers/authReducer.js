@@ -3,6 +3,7 @@ const initialState = {
   id:0,
   signed: false,
   user: '',
+  provider: false
 }
 
 
@@ -16,6 +17,10 @@ const AuthReducer = (state = initialState, action ) =>{
       break;
     case 'SET_USER':
       return {...state, user:action.payload.user };
+      break;
+    case 'SET_PROVIDER':
+      return {...state, provider:true};
+      break;
   }
 
   return state;

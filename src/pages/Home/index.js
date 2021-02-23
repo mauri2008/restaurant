@@ -10,70 +10,75 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import {toast, ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import { UlList, ContainerMain, MenuDay, Context, Icon, AlertBase} from './style';
+import { UlList, ContainerMain, MenuDay, Context, Icon, AlertBase, BackGroundHome} from './style';
 
 import Api from '../../services/api'
+import Cloading from '../../components/loading'
 
 function Home(){
 
   const token = useSelector(state=> state.auth.token);
   const dateUser =JSON.parse( localStorage.getItem('user'));
-
+  const userPay = useSelector(state=>state.auth.user);
+  
   const [dataMenu, setDataMenu] = useState([]);
   const [menuDay, setMenuDay] = useState([]);
   const [date, setdate] = useState(new Date());
+
+  const [loading , setLoading] = useState(false);
 
   useEffect(()=>{
     
     async function readMenu(){
 
+     
       const response = await Api.get(`/request?id_user=${dateUser.id}`)
       const {data} = response;
 
-      data.map((dataAlter)=>{
-        dataAlter.menu.service_data = utcToZonedTime( dataAlter.menu.service_data )
-      })
+        if(data){
+          data.map((dataAlter)=>{
+            dataAlter.menu.service_data = utcToZonedTime( dataAlter.menu.service_data )
+          })
 
-      const menus = data.filter((item)=>{
+          const menus = data.filter((item)=>{
+            
+            if(isBefore(date, utcToZonedTime(item.menu.service_data))){
+            return {
+              id: item.id,
+              date: utcToZonedTime(item.menu.service_data),
+              option: item.option,
+
+            }
+          }
+          });
+          
+          const menuday = data.filter((menuNow)=>{
+
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const checkData = setSeconds(setMinutes(setHours(date, 3),0),0);
+          const compareDate = utcToZonedTime(checkData,timezone)
+
+          const dateRegister = format(utcToZonedTime(menuNow.menu.service_data), 'dd/MM/yyyy');
+          const dateNow =  format(utcToZonedTime(compareDate), 'dd/MM/yyyy');
+
+        //   console.log(isEqual(dateRegister, dateNow))
+          
+          if(format(utcToZonedTime(menuNow.menu.service_data), 'dd/MM/yyyy') === format(utcToZonedTime(compareDate), 'dd/MM/yyyy')){
         
-        if(isBefore(date, utcToZonedTime(item.menu.service_data))){
-        return {
-          id: item.id,
-          date: utcToZonedTime(item.menu.service_data),
-          option: item.option,
+            return menuNow
+          }
 
+          });
+          setMenuDay(menuday)
+          setDataMenu(menus)
+
+        }else{
+          
         }
-      }
-      });
-      
-       const menuday = data.filter((menuNow)=>{
-
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const checkData = setSeconds(setMinutes(setHours(date, 3),0),0);
-        const compareDate = utcToZonedTime(checkData,timezone)
-
-        const dateRegister = format(utcToZonedTime(menuNow.menu.service_data), 'dd/MM/yyyy');
-        const dateNow =  format(utcToZonedTime(compareDate), 'dd/MM/yyyy');
-
-      //   console.log(isEqual(dateRegister, dateNow))
-        
-        if(format(utcToZonedTime(menuNow.menu.service_data), 'dd/MM/yyyy') === format(utcToZonedTime(compareDate), 'dd/MM/yyyy')){
-      
-          return menuNow
-        }
-
-       });
-
-      console.log(menuday);
-      console.log(menus)
-
-
-      setMenuDay(menuday)
-      setDataMenu(menus)
-
     }
 
     readMenu();
+
   },[]);
 
   async function handleDelete(id){
@@ -126,6 +131,7 @@ function Home(){
     <ContainerMain>
       <ToastContainer/>
       {
+        menuDay.length>0 &&
         menuDay.map((itemDay)=>(
 
             <MenuDay key={itemDay.id}>
@@ -136,37 +142,42 @@ function Home(){
 
         ))
       }
-
-
-      <UlList>
-        {
-          dataMenu.map((itens)=>(
+      
+       {(dataMenu.length > 0) ?
+            <UlList>
+            {
+              dataMenu.map((itens)=>(
+                          
+                <li key={itens.id}>
+                  <Icon>
+                    <FaUtensils/>
+                  </Icon>
+                  <Context>
+                      <div>
+                        <p>{format(itens.menu.service_data, "d 'de' MMMM",{locale: pt })}</p>
+                        <a href="#" onClick={()=>{handleDelete(itens.id)}}>Cancelar</a>
+                        
+                      </div>
                       
-            <li key={itens.id}>
-              <Icon>
-                <FaUtensils/>
-              </Icon>
-              <Context>
-                  <div>
-                    <p>{format(itens.menu.service_data, "d 'de' MMMM",{locale: pt })}</p>
-                    <a href="#" onClick={()=>{handleDelete(itens.id)}}>Cancelar</a>
-                    
-                  </div>
-                  
-                  <span>{itens.option}</span>
+                      <span>{itens.option}</span>
 
-                  
-              </Context>
+                      
+                  </Context>
 
-            </li>            
+                </li>            
+              ))
+            }
+          </UlList>  :
 
-          ))
+          <BackGroundHome>
+              <h1>SolarMeats</h1>
+          </BackGroundHome>}
 
-        }
+      
 
-
-      </UlList>  
-
+          { loading &&
+          <Cloading/>
+          }
     </ContainerMain>
     
   );

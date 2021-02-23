@@ -152,3 +152,18 @@ export const AlertBase = styled.div`
 
 `;
 
+export const BackGroundHome = styled.div`
+  height: 80vh;
+  width: 960px;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  
+  & h1{
+    font-size:40px;
+    font-weight: bold;
+    font-family: arial black, sans-serif;
+    color: #eee;
+  }
+`;
+

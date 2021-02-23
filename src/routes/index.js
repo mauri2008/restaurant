@@ -1,5 +1,6 @@
 import React from 'react'
-import { Switch} from 'react-router-dom';
+import { Switch } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 
 import Route from './Route';
 
@@ -9,9 +10,12 @@ import User from '../pages/User';
 import listMeat from '../pages/listMeat';
 import NewMenu from '../pages/NewMenu';
 import ReportMenu from '../pages/ReportMeat';
+import Menu from '../pages/ReportMenu';
+
+
 
 function routes(){
-
+  
   return(
     <Switch>
       <Route exact path="/" component={Login}/>
@@ -20,6 +24,7 @@ function routes(){
       <Route path="/listmeats" component={listMeat} isPrivate/>
       <Route path="/novomenu" component={NewMenu} isPrivate/>
       <Route path="/relatorio" component={ReportMenu} isPrivate/>
+      <Route path="/cardapio" component={Menu} isPrivate/>
       
     </Switch>
   );

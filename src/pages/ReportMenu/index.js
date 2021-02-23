@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from  'react';
 import { useSelector, } from 'react-redux'
-import { FaFilter, FaRegFilePdf } from 'react-icons/fa';
+import { FaFilter, FaRegFilePdf , FaTrashAlt } from 'react-icons/fa';
 import { 
   ContainerMain, 
   StatusMeats , 
@@ -9,14 +9,14 @@ import {
   ToolMenu
 
 } from './style';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 import { utcToZonedTime} from 'date-fns-tz'
 import {format} from 'date-fns'
 import pt from 'date-fns/locale/pt'
 import {Form, Select} from '@rocketseat/unform';
 import Api from   '../../services/api'
-
-
 
 const optionsTurno = [
 
@@ -34,15 +34,15 @@ function NewMenu(){
 
   useEffect(()=>{
     async function initial(){
-      const response = await Api.get('/request');
+      const response = await Api.get('/menu?provider=true');
       const {data} = response;
       let groupDate = [];
       data.map((itemAlter)=>{
-        itemAlter.menu.service_data = utcToZonedTime(itemAlter.menu.service_data)
+        itemAlter.service_data = utcToZonedTime(itemAlter.service_data)
       })
       data.map((itemAlter)=>{
-        itemAlter.menu.service_data = format(itemAlter.menu.service_data, "dd-MM-yyyy",{locale: pt}) 
-        groupDate.push(itemAlter.menu.service_data);
+        itemAlter.service_data = format(itemAlter.service_data, "dd-MM-yyyy",{locale: pt}) 
+        groupDate.push(itemAlter.service_data);
       })
 
 
@@ -84,11 +84,36 @@ function NewMenu(){
 
   }
 
+  const handleRemove = async (id)=>{
+    console.log(id);
+     await Api.delete('/menu',{
+       data:{
+         id
+       }
+     })
+      .then((response)=>{
+        toast.success('Cardápio removido com sucesso!', {
+          onClose:()=> document.location.reload()
+        });
+        
+      })
+      .catch((error)=>{
+        if (error.response){
+          const {status, data} = error.response;
+
+          toast.error(`Erro: ${data.error}`);
+        }
+      });
+
+
+
+  }
 
 
   return(   
     <ContainerMain>
-
+      <ToastContainer/>
+      <h1>Relatório de Cardápio</h1>
       <StatusMeats>
         <p>10 of 20</p>
         <div className="selectSearch">
@@ -107,19 +132,20 @@ function NewMenu(){
           <tr>
             <td>Turno</td>
             <td>Data</td>
-            <td>Colaborador</td>
-            <td>Pedido</td>
-            <td>Atendido</td>
+            <td>Principal</td>
+            <td>Opção</td>
+            <td></td>
           </tr>
         {
 
           data.map((item)=>(
-            <tr>
+            <tr key={item.id}>
               <td>{`${item.turno}º`}</td>
-              <td>{item.menu.service_data}</td>
-              <td>{item.user.name}</td>
-              <td>{item.option}</td>
-              <td>{item.attended ? <Info color={'#FFCC99'}>Atendido</Info>: <Info color={'#99FF99'}>Em Aberto</Info>}</td>
+              <td>{item.service_data}</td>
+              <td>{item.main}</td>
+              <td>{item.options}</td>
+              <td><button onClick={()=>handleRemove(item.id)}><FaTrashAlt/> Remover</button></td>
+              
             </tr>
           ))
         }    

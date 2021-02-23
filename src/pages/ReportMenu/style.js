@@ -9,6 +9,10 @@ export const ContainerMain = styled.div`
   align-items:center;
   flex-direction:column;
 
+  & h1{
+    margin-top: 20px;
+    margin-bottom:20px;
+  }
 
 `;
 
@@ -96,6 +100,19 @@ export const ListMenu = styled.table`
     padding-top:10px;
     padding-bottom: 10px;
     padding-left: 8px;
+
+    & button{
+      border: none;
+      background: #ff9999;
+      color: #fff;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 3px;
+      
+      &:hover{
+        background: ${darken(0.1, '#ff9999')}
+      }
+    }
   }
  }
 

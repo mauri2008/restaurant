@@ -68,6 +68,25 @@ export const ContainerMain = styled.div`
       &:hover{
         background: ${darken(0.1, '#54A0F6')}
       }
+
+    }
+
+    .check{
+      width: 100%;
+      display: flex;
+      flex-direction:row;
+      align-items:center;
+      margin-top: 15px;
+      margin-left: 5px;
+
+      & input{
+        margin:0;
+      }
+      & label{
+        margin-right: 25px;
+        margin-left: 5px;
+      }
+      
     }
 
   }

@@ -47,7 +47,6 @@ export const TopNav = styled.div`
      list-style:none;
      li{
        display:inline;
-
        a{
          padding: 2px 10px;
          display:inline-block;
@@ -57,6 +56,21 @@ export const TopNav = styled.div`
          &:hover{
            color:#6a6a6a; 
          }
+       }
+
+       & ul{
+        position:absolute;
+        top:100%;
+        left:48%;
+        background:#FCA33C;
+        
+        & li{
+          border:1px solid #0000;
+          display:block;
+          width:150px;
+          color:#fff;
+          margin: 12px 10px;
+        }
        }
      }
    }
@@ -82,5 +96,9 @@ export const Element = styled.div`
    padding-bottom:30px;
    
 
+`;
+
+export const SubMenu = styled.ul`
+  display:${(props)=> props.display? 'block':'none'}
 `;
 
